@@ -1,12 +1,5 @@
 
-Purpose
-=======
+Some Java utilities for dealing with wildlife data out of some of Rachel's projects.  Right now, there are two different utilities here: 
+* cavitynesting : presents a tree-based viewer for the sqlite3 database files produced by the 'cavitynesting' project. 
+* forestcover : utilities for calculating forest-cover, by allowing the user to annotate stitched-together (ortho-normal) satellite photographs presented as PNGs, with polygons.
 
-Some Java utilities for dealing with wildlife data out of some of Rachel's projects.
-
-Right now, this is limited mainly to a tree-based browser of the cavitynesting database (an sqlite3 file) produced by the cavitynesting Django web app.
-
-Dependencies 
-------------
-
-* sqliteJDBC
