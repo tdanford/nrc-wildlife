@@ -4,23 +4,27 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.*;
 import java.util.*;
 
 import javax.imageio.ImageIO;
+import javax.media.jai.JAI;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class ImageDisplay extends JFrame {
 	
 	public static void main(String[] args) throws IOException { 
-		File f = new File(args[0]); // needs to be a .png
+		File dir = new ForestCoverProperties("wake").getBaseDir();
+		File f = new File(dir, "wilders_ridge/composite.png");
 		ImageDisplay disp = new ImageDisplay(f);
 	}
 
 	private BufferedImage image;
+	
 	private int imageWidth, imageHeight;
-	private double imageAspect;
+	private double imageAspect;  // == imageWidth / imageHeight;
 	
 	private JCheckBoxMenuItem isEditingPolygons;
 	private ImagePanel panel;
@@ -29,15 +33,20 @@ public class ImageDisplay extends JFrame {
 		super("Image Display");
 		
 		image = ImageIO.read(f);
+		//image = JAI.create("fileload", f.getAbsolutePath());
+		//image = new BufferedImage(rimage.getWidth(), rimage.getHeight(), BufferedImage.TYPE_INT_RGB);
+		//image.setData(rimage.getData());
+		
 		imageWidth = image.getWidth();
 		imageHeight = image.getHeight();
 		imageAspect = (double)imageWidth / (double)imageHeight;
 		
+		int fHeight = 300;
+		int fWidth = (int)(imageAspect * fHeight);
+		
 		Container c = (Container)getContentPane();
 		c.setLayout(new BorderLayout());
-		c.add(panel = new ImagePanel(), BorderLayout.CENTER);
-		int fHeight = 300;
-		panel.setPreferredSize(new Dimension((int)(imageAspect * fHeight), fHeight));
+		c.add(panel = new ImagePanel(fWidth, fHeight), BorderLayout.CENTER);
 		
 		setJMenuBar(createJMenuBar());
 		
@@ -89,7 +98,10 @@ public class ImageDisplay extends JFrame {
 		
 		private int selectedPolygon;
 		
-		public ImagePanel() { 
+		public ImagePanel(int initialWidth, int initialHeight) {
+			
+			setPreferredSize(new Dimension(initialWidth, initialHeight));
+			
 			polyX = new ArrayList<int[]>();
 			polyY = new ArrayList<int[]>();
 			currentX = new ArrayList<Integer>();
@@ -255,7 +267,7 @@ public class ImageDisplay extends JFrame {
 			Polygon poly = new Polygon(xs, ys, xs.length);
 			return poly;
 		}
-		
+
 		protected void paintComponent(Graphics gg) {
 			super.paintComponent(gg);
 			Graphics2D g = (Graphics2D)gg;
